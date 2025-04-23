@@ -1,3 +1,4 @@
+print("Hello welcome to sudoku")
 # Ask for the user's name
 name = input("Enter your name: ")
 
