@@ -1,14 +1,15 @@
 print("Hello welcome to sudoku")
-# Ask for the user's name
+
+#ask for the users name
 name = input("Enter your name: ")
 
-# Ask user to press 'p' to play or 's' to solve
+#ask user to choose 'p' to play the game or 's' to solve the game
 choice = input("Press 'p' to play or 's' to solve: ")
 
-# Respond based on user input
+#IF statment 
 if choice == 'p':
     print("You chose to play.")
 elif choice == 's':
     print("You chose to solve.")
 else:
-    print("Invalid choice.")
+    print("Please choose p to play or s to solved.")
