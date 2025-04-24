@@ -9,7 +9,11 @@ choice = input("Press 'p' to play or 's' to solve: ")
 #IF statment 
 if choice == 'p':
     print("You chose to play.")
+
 elif choice == 's':
     print("You chose to solve.")
 else:
     print("Please choose p to play or s to solved.")
+
+#can eiter do one main or do 3 files main, play and solve then do call functions
+
