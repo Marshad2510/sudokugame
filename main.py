@@ -13,11 +13,13 @@ def main():
     if choice == 'p':
         print("Alright get ready to play.")
         play_sudoku()
+
     elif choice == 's':
         print("You chose to solve")
         solve_sudoku()
+
     else:
-        print("Invalid choice! Please either choose 'p' to play or 's' to solve.")
+        print("Sorry, invalid choice! Please either choose 'p' to play or 's' to solve.")
 
 # Code for the board
 
