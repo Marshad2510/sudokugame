@@ -189,55 +189,75 @@ def create_puzzle(full_board, blanks):
     # Make a copy of board
     puzzle = [row[:] for row in full_board]  
     size = len(puzzle) #size of board
-    count = 0 #for removed numbers
+    count = 0 #initalise counter for removed numbers
+    
+    #keep removing numbers until desired number of blanks is reached
     while count < blanks:
-        row = random.randint(0, size - 1)
-        col = random.randint(0, size - 1)
-        if puzzle[row][col] != 0:
-            puzzle[row][col] = 0  # Remove number
+        row = random.randint(0, size - 1) #selects a randow row
+        col = random.randint(0, size - 1) # selects a randow column
+        if puzzle[row][col] != 0: #ensures it doesnt remove a removed number
+            puzzle[row][col] = 0  # removes the number
+            #ENSURE IT ADDS 1 TO NUMBER OF NUMBERS REMOVED
             count += 1
+    #return the puzzle with the blanks
     return puzzle
 
-# Check if player's board matches the solution
+# VERIFICATION - check if user solution matches with actual solution
 def is_solved(player_board, solution):
+    #loop thru each box and compare
     for i in range(len(player_board)):
         for j in range(len(player_board)):
             if player_board[i][j] != solution[i][j]:
-                return False  # Mismatch found
+                #if it doesnt math then return false
+                return False  
+    #if matches successfully return true
     return True
 
-# Function to handle the full game flow
+# RULES AND FUNCTIONS
 def play_sudoku(size, name):
-    solution = [[0]*size for _ in range(size)]  # Create empty solution board
-    fill_board(solution)  # Fill it with valid solution
+    solution = [[0]*size for _ in range(size)]  # create empty solution board
+    fill_board(solution)  # uses backtracking then fill it with correct solution
 
-    blanks = 8 if size == 4 else 40  # Number of blanks based on difficulty
-    puzzle = create_puzzle(solution, blanks)  # Generate puzzle
-    board = [row[:] for row in puzzle]  # Create player board
+    #number of blanks per game
+    # if easy then remove 8, if hard then remove 40
+    blanks = 8 if size == 4 else 40  
+    # create sudoku with blanks
+    puzzle = create_puzzle(solution, blanks)  
+    board = [row[:] for row in puzzle]  # copy to create players board
 
+    #WELCOME MESSAGE with the theirs name + how to play
     print(f"\n{name}, here is your Sudoku puzzle!")
     print("Enter moves like 'A1 2'. Enter 'q' to quit.")
-    print_board(board)  # Show initial board
+    
+    # show initial board
+    print_board(board)  
 
-    wrong_attempts = 0  # Track mistakes
+    #count no of wrong attempts
+    wrong_attempts = 0  
 
+   #PLAYING THE GAME
     while True:
-        move = input("Enter your move: ").strip().upper()  # Get player move
+        #get player input
+        move = input("Enter your move: ").strip().upper()  
 
+        #to quit the game
         if move.lower() == 'q':
             print("You quit the game.")
             return
 
+    #Extracting the user input - gets the user input then split and convert
         try:
             parts = move.split()
+            # it has to be 2 parts. coordinates and value = e.g A1 2. (A1 =coordinates) + (2 = value)
             if len(parts) != 2:
-                raise ValueError  # Invalid input format
+                # invalid input  
+                raise ValueError  
 
-            col_letter = parts[0][0]  # Extract column letter
-            row_num = int(parts[0][1])  # Extract row number
-            num = int(parts[1])  # Extract number to place
+            col_letter = parts[0][0]  # get column letter (e.g Ax x)
+            row_num = int(parts[0][1])  # get row number (e.g X1 x )
+            num = int(parts[1])  # get value (e.g Xx 1)
 
-            row = row_num - 1
+            row = row_num - 1 #convert to 0- based index for rows
             col = col_letter_to_index(col_letter, size)  # Get column index
 
             if row not in range(size) or col == -1 or num not in range(1, size + 1):
@@ -253,17 +273,19 @@ def play_sudoku(size, name):
                 print_board(board)  # Show updated board
 
                 if is_solved(board, solution):
-                    print(f"\n Congratulations {name}! You solved the puzzle!")
+                    print(f"\n Congratulations {name}! You have successfully solved the puzzle!")
                     return
             else:
-                print("\u274C Wrong move!")
-                wrong_attempts += 1
-                print(f"Wrong attempts: {wrong_attempts}/3")
-                if wrong_attempts == 3:
-                    print("Game over! Too many mistakes.")
+                print(" Sorry thats incorrect, please try again!")
+                # +1 to the wrong_attempts counter
+                wrong_attempts += 1 
+                print(f"Number of wrong attempts: {wrong_attempts}/3")
+                #NO OF MAX WRONG ATTEMPTS
+                if wrong_attempts == 3: 
+                    print("Game over! Sorry you reached the max number of mistakes.")
                     return
         except:
-            print("Invalid input. Try again.")
+            print("Invalid input. please try again.")
 
 # Run the main function to start the game
 if __name__ == "__main__":
