@@ -55,13 +55,14 @@ def main():
 
             
             print("\n---Instructions ---")
-            print("- Enter (e) for Easy or (h) for Hard diffuclty level.")
+            print("- Welcome to Sudoku.")
+            print("- Enter (e) for Easy or (h) for Hard diffuclty game.")
             print("-  fill in the empty cells so that each row, column, and box contains all the numbers from 1 to 9 ")
-            print("- (or 1 to 4 in Easy mode) without repeating any.")
-            print("- A bigger box will either have 4(easy level) or 9(hard level) miniboxes, in these miniboxes numbers cant be repeated ")
+            print("- (or 1 to 4 in Easy mode) without repeating the numbers again.")
+            print("- A bigger box will either have 4(easy level) or 9(hard level) miniboxes, also in these miniboxes numbers can not be repeated ")
             print("- Enter moves in format like e.g 'A1 2'. Therefore this will place the number 2 in the column A row 1 box .")
             print("- You can't change original puzzle numbers.")
-            print("- You have 3 chances to make a wrong move.")           
+            print("- You will only have 3 chances to make a wrong move.")           
             print("- Solve the puzzle to win. Good luck!\n")
 
 
@@ -257,36 +258,42 @@ def play_sudoku(size, name):
             row_num = int(parts[0][1])  # get row number (e.g X1 x )
             num = int(parts[1])  # get value (e.g Xx 1)
 
-            row = row_num - 1 #convert to 0- based index for rows
-            col = col_letter_to_index(col_letter, size)  # Get column index
+            row = row_num - 1 #index - convert to 0, as pyhthon begins at 0
+            col = col_letter_to_index(col_letter, size)  #index - convert letters to numbers
 
+            #ensure input is within the board size
             if row not in range(size) or col == -1 or num not in range(1, size + 1):
-                print("Invalid move. Use format like A1 3.")
-                continue
+                print("Invalid move. The format is A1 3.")
+                continue #ask to re-input
 
+            #ensure input is not the original number on the board
             if puzzle[row][col] != 0:
                 print("You can't change original numbers.")
-                continue
+                continue #ask to re-input
 
+            #ensure input follows the RULES, VALIDATION and FUNCTIONS
             if is_valid(board, row, col, num):
-                board[row][col] = num  # Place the number
-                print_board(board)  # Show updated board
+                
+                board[row][col] = num  #place the number
+                print_board(board)  #update and print new board
 
+                #checks if board is successfully completed
                 if is_solved(board, solution):
                     print(f"\n Congratulations {name}! You have successfully solved the puzzle!")
                     return
+            
             else:
                 print(" Sorry thats incorrect, please try again!")
                 # +1 to the wrong_attempts counter
                 wrong_attempts += 1 
                 print(f"Number of wrong attempts: {wrong_attempts}/3")
-                #NO OF MAX WRONG ATTEMPTS
+                #NO OF MAX WRONG ATTEMPTS = 3
                 if wrong_attempts == 3: 
                     print("Game over! Sorry you reached the max number of mistakes.")
                     return
         except:
             print("Invalid input. please try again.")
 
-# Run the main function to start the game
+# Run main function = starts the game
 if __name__ == "__main__":
     main()
