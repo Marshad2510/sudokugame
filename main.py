@@ -16,7 +16,7 @@ def main():
 
     elif choice == 's':
         print("You chose to solve")
-        solve_sudoku()
+        solve_sudoku() 
 
     else:
         print("Sorry, invalid choice! Please either choose 'p' to play or 's' to solve.")
