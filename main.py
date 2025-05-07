@@ -22,6 +22,7 @@ def main():
     while True:
         print("---Main Menu---")
         print("Press 'p' to play")
+        print("Press 's' to solve")
         print("Press 'i' for instructions")
         print("Press 'q' to quit")
 
@@ -46,9 +47,9 @@ def main():
             else:
                 print("Invalid choice. Please either choose 'e' for easy game or 'h'for a harder game.") 
 
-
-
-
+    #TO SOLVE
+        elif choice == 's':
+            solve_sudoku_input()
 
     #INSTRUCTIONS 
         elif choice == 'i':  # If instructions selected
@@ -64,8 +65,6 @@ def main():
             print("- You can't change original puzzle numbers.")
             print("- You will only have 3 chances to make a wrong move.")           
             print("- Solve the puzzle to win. Good luck!\n")
-
-
 
     #QUIT GAME
         elif choice == 'q':
@@ -293,6 +292,33 @@ def play_sudoku(size, name):
                     return
         except:
             print("Invalid input. please try again.")
+
+# NEW FUNCTION - Solve Sudoku from user input
+def solve_sudoku_input():
+    try:
+        size = int(input("Enter the board size (4 for Easy, 9 for Hard): "))
+        if size not in [4, 9]:
+            print("Only 4 or 9 are allowed.")
+            return
+        print("Enter the board row by row with 0 for blanks (e.g., 1030).")
+        board = []
+        for i in range(size):
+            while True:
+                row_input = input(f"Row {i+1}: ")
+                if len(row_input) != size or not row_input.isdigit():
+                    print(f"Enter exactly {size} digits.")
+                else:
+                    board.append([int(c) for c in row_input])
+                    break
+        print("\nInput Board:")
+        print_board(board)
+        if solve_board(board):
+            print("\nSolved Board:")
+            print_board(board)
+        else:
+            print("This Sudoku puzzle cannot be solved.")
+    except:
+        print("Error occurred. Please make sure your input is correct.")
 
 # Run main function = starts the game
 if __name__ == "__main__":
