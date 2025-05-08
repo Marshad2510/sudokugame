@@ -332,6 +332,6 @@ def solve_sudoku_input():
 
 
 
-# main to start the game 
+# main to start game (KEEP THIS HERE AT THE BOTTOM OF THE CODESS)
 if __name__ == "__main__":
     main()
