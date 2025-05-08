@@ -1,13 +1,13 @@
-# Import random module to generate random numbers for the Sudoku puzzle
-from cProfile import label
+# Import random module = generate random numbers for the sudoku puzzle
 import random
 
 # Labels for columns
-Column_lbl_9 = "A B C D E F G H I".split()  # Labels for hard 9x9 board
-Column_lbl_4 = "A B C D".split()  # Labels for easier 4x4 board
+column_lable_h = ["A", "B", "C", "D", "E", "F", "G", "H", "I"] # colomn for the hard 9x9 board
+column_lable_e = ["A", "B", "C", "D"] # colomn label for easier 4x4 board
 
 
-# Main function to start the game
+
+# main function to start the game
 def main():
     print("Welcome to Sudoku!")
 
@@ -19,12 +19,15 @@ def main():
 
 ###
 
-    # Main Menu loop
+    
+    # Main Menu
     while True:
-        print("---Main Menu---")
-        print("Press 'p' to play")
-        print("Press 's' to solve")
-        print("Press 'i' for instructions")
+        print("~~~~~Main Menu~~~~~")
+        
+        print("please choose from the following options:")
+        print("Press 'p' to play sudoku ")
+        print("Press 's' to solve your own sudoku puzzle")
+        print("Press 'i' for instructions and how to play sudoku")
         print("Press 'q' to quit")
 
         # Get user choice
@@ -64,6 +67,8 @@ def main():
             print("- Use format like 'A1 2'. This will place the number 2 in column A, row 1.")
             print("- Each game you'll only have 3 chances to make wrong moves then the game will end. Good luck!\n")
 
+        
+        
         # If user wants to quit the game
         elif choice == 'q':
             print("thanks for playing! Goodbye!")
@@ -72,16 +77,24 @@ def main():
             print("Sorry thats an invalid choice. Please try again.")
 
 
+
+
 # Functions to play Sudoku 
+
 def play_sudoku(size, name):
     # Create an empty solution board
     solution = [[0] * size for _ in range(size)]  
 
     fill_board(solution)  # Use backtracking to fill the board with the correct solution
 
-    # Number of blanks to remove for each difficulty
-    #easy game 4x4 will have 8 blanks and hard game 9x9 will have 40
-    blank = 8 if size == 4 else 40
+    # Number of blanks/remove depends on each difficulty
+    #an easy game 4x4 will have 8 blanks and  a hard game 9x9 will have 40
+    
+    if size == 4: #easy game 
+        blank = 8 # 8 blanks
+    
+    else: 
+        blank = 40 #hard game = 40 blanks
 
     # create Sudoku puzzle by removing numbers from solution
     puzzle = create_puzzle(solution, blank)
@@ -102,30 +115,43 @@ def play_sudoku(size, name):
     
     # Start playing the game
     while True:
-        move = input("Enter your move: ").strip().upper()
+        move = input("Please enter your move (e.g A1 2, where A is the colomn, 1 is the row and 2 is the value): ").strip().upper()
 
+        
         # have this at the top if user wants to quit
         if move.lower() == 'q': 
-            print("You quit the game.")
+            print("You have quit the game.")
             return
 
         try:
             parts = move.split()
             # Ensure the input has the correct format
             if len(parts) != 2:  
-                raise ValueError
+                raise ValueError ("enter your move (e.g A1 2, where A is the colomn, 1 is the row and 2 is the value")
 
             column_letter = parts[0][0] #colum letter 
             row_number = int(parts[0][1]) # row number
-            num = int(parts[1]) #number
+            num = int(parts[1]) #number/value to be in sudoku
 
             row = row_number - 1  # Convert row number to index as it starts at 0
             col = column_letter_to_index(column_letter, size)  # Convert column letter to index
 
             # Check if input is valid
-            if row not in range(size) or col == -1 or num not in range(1, size + 1):
-                print("Sorry thats an nvalid move. the format is 'A1 2'. This will place the number 2 in column A, row 1.")
-                continue #skip to next 
+                
+            #check if row is within the range
+            if row not in range(size):
+                print("please double check your row number. It should be between 1 and", size)
+                continue
+            
+            #check if that the colomn is within the range 
+            if col == -1:
+                print("Please check your column letter. It should be one of the valid labels at the top.")
+                continue
+            
+            #Check if number is valid 
+            if num not in range(1, size + 1):
+                print("sorry thats a incorrect number, try again.")
+                continue 
 
             if puzzle[row][col] != 0:  # Can't change original numbers
                 print("You can't change original numbers.")
@@ -138,7 +164,7 @@ def play_sudoku(size, name):
 
                 # Check if puzzle is solved
                 if is_solved(board, solution):
-                    print(f"\n Congratulations {name}! You have successfully solved the puzzle! Taking you back to the main menu now...")
+                    print(f"Well done {name}! You have successfully solved the puzzle.Taking you back to the main menu...")
                     return
             
             
@@ -150,30 +176,34 @@ def play_sudoku(size, name):
                 
                 # end the game after 3 wrong attempts
                 if wrong_atmpts == 3:  
-                    print("Game over! You've reached the maximum number of mistakes.")
+                    print("game over! You've have lost all your lives. Rome wasnt built in a day, keep trying ...")
                     return
-        except:
+        except ValueError:
             print("Sorry thats a invalid input. Please try again.")
 
 
-# Function to print the board
+# function = prints the sudoku board
 def print_board(board):
     size = len(board)
-    lables = Column_lbl_4 if size == 4 else Column_lbl_9
-    
+    lables = column_lable_e if size == 4 else column_lable_h
+
 ############################################################################
     
     # Print column headers
-    print("\n   " + "  ".join(label))
+    print("\n   " + "  ".join(lables))
 
-    # Print rows
+    # print rows
     for i in range(size):
         if i % int(size ** 0.5) == 0 and i != 0:
-            print("   " + "-" * (size * 2 + (size // int(size ** 0.5)) - 1))  # Box separation line
+            print("   " + "-" * (size * 2 + (size // int(size ** 0.5)) - 1))  # box separation line
 
+        #row number
         row_str = f"{i + 1}  "
         for j in range(size):
             if j % int(size ** 0.5) == 0 and j != 0:
+                
+                
+                #make miniboxes within bigger box
                 row_str += "| "
 
             cell = board[i][j]
@@ -182,7 +212,7 @@ def print_board(board):
 
         print(row_str)
 
-# Function to create a Sudoku puzzle by removing numbers from a solved board
+# function = to create a sudoku puzzle - randomly remove numbers from a solved board
 def create_puzzle(full_board, blank):
     puzzle = [row[:] for row in full_board]
     size = len(puzzle)
@@ -196,35 +226,41 @@ def create_puzzle(full_board, blank):
             count += 1
     return puzzle
 
-# Backtracking function to solve the Sudoku board
-def Solve_Brd(board):
+# backtracking function = solves the board
+def solve_board(board):
     size = len(board)
 
     for row in range(size):
         for col in range(size):
-            if board[row][col] == 0:
-                for num in range(1, size + 1):
-                    if is_valid(board, row, col, num):
-                        board[row][col] = num
-                        if Solve_Brd(board):
+            if board[row][col] == 0: #if that cell is blank
+                for num in range(1, size + 1):# try the numbers in range
+                    if is_valid(board, row, col, num): #double check by validating if its the right number
+                        board[row][col] = num #then place the number in board
+                        if solve_board(board): #repeat to solve the full sudkou board  
                             return True
-                        board[row][col] = 0
+                        board[row][col] = 0 #if it doesn't work, then go back and remove that number
+                #if no valid numbers found then return false
                 return False
+    #puzzle is successfullt solved when all the blanks are filled
     return True
 
-# Function to fill the board with the correct numbers using backtracking
+# function = fills  board with  correct numbers via backtracking
 def fill_board(board):
-    Solve_Brd(board)
+    #use backtracking to solve
+    solve_board(board)
 
-# Function to check if a move is valid
+# function = checks if move is valid
 def is_valid(board, row, col, num):
     size = len(board)
     box = int(size ** 0.5)
 
+    #check if the number is already in the roe or the colomun
     for i in range(size):
         if board[row][i] == num or board[i][col] == num:
             return False
 
+    
+    #check if that number is already within the minibox
     start_row = (row // box) * box
     start_col = (col // box) * box
     for i in range(box):
@@ -233,15 +269,15 @@ def is_valid(board, row, col, num):
                 return False
     return True
 
-# Function to convert column letter to index
+# function = converts column letter to index
 def column_letter_to_index(letter, size):
-    labels = Column_lbl_4 if size == 4 else Column_lbl_9
+    labels = column_lable_e if size == 4 else column_lable_h
     letter = letter.upper()
     if letter in labels:
         return labels.index(letter)
     return -1
 
-# Function to check if the player has solved the puzzle
+# ffunction = checks if player has successfully solved their puzzle
 def is_solved(player_brd, solution):
     for i in range(len(player_brd)):
         for j in range(len(player_brd)):
@@ -249,32 +285,53 @@ def is_solved(player_brd, solution):
                 return False
     return True
 
-# Function to solve the Sudoku from user input
+
+
+
+
+#Solve
+# function = solves a sudoku from a users input
+
 def solve_sudoku_input():
+    #ask user if they want so solve a 4x4 board or a 9x9 board
     try:
-        size = int(input("Enter the board size (4 for Easy, 9 for Hard): "))
-        if size not in [4, 9]:
-            print("Only 4 or 9 are allowed.")
+        choice = input("Please enter 'e' if u want to solve a easy board 4x4 or enter 'h' to solve a hard 9x9 board: ").lower()
+
+        #if statmnt for e or h board
+        if choice == 'e':
+            size = 4 
+        
+        elif choice == 'h':
+            size = 9
+        
+        else:
+            print("Sorry that isn't right please either enter e for a 4x4 board or h for a 9x9 board.")
             return
-        print("Enter the board row by row with 0 for blanks (e.g., 1030).")
+        print("Perfecr now enter your sudoky row by row, and use 0 for the blanks (e.g 1001)")
+
         board = []
         for i in range(size):
             while True:
-                row_input = input(f"Row {i + 1}: ")
+                row_input = input(f"row {i+1}: ")
                 if len(row_input) != size or not row_input.isdigit():
-                    print(f"Enter exactly {size} digits.")
+                    print(f"sorry ensure that its exactly {size} digits.")
                 else:
-                    board.append([int(c) for c in row_input])
+                    row = [int(n) for n in row_input]
+                    board.append(row)
                     break
+
         print_board(board)
-        if Solve_Brd(board):
-            print("\nSolved Board:")
+
+        if solve_board(board):
+            print("\n this is the solved board:")
             print_board(board)
         else:
-            print("This Sudoku puzzle cannot be solved.")
-    except:
-        print("Error occurred. Please make sure your input is correct.")
+            print("sorry, can't solve. Please check your input and try again")
+    except ValueError:
+        print("sorry somethings not right, please double check and try again.")
 
-# Start the game
+
+
+# main to start the game 
 if __name__ == "__main__":
     main()
