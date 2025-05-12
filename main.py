@@ -1,15 +1,18 @@
-import random
-from dataclasses import dataclass
-from typing import List, Optional
+import random #need a random module to allow random selection
+from dataclasses import dataclass #define simple data containers???
+from typing import List, Optional #???
 
-# Column labels for easy reference
+
+
+#columnlabels for reference
 COLUMN_LABELS = {
-    4: ["A", "B", "C", "D"],
-    9: ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
+    4: ["A", "B", "C", "D"], #easy game = 4 
+    9: ["A", "B", "C", "D", "E", "F", "G", "H", "I"] #hard game = 9
 }
 
-# Data Model for Sudoku Board
-@dataclass(frozen=True)
+#data modelling 
+#sudoku board
+@dataclass(frozen=True) #can not change 
 class SudokuBoard:
     puzzle: List[List[int]]
     solution: List[List[int]]
@@ -17,14 +20,15 @@ class SudokuBoard:
     blanks: int
 
 
-# Generates a fully solved board using backtracking (pure)
+# create a fully solved board using backtracking
 def generate_solved_board(size: int) -> List[List[int]]:
     board = [[0] * size for _ in range(size)]
     solve_board(board)
     return board
 
 
-# Creates a puzzle by removing numbers from a solved board (pure)
+# create the puzzle 
+# removes numbers creating blanks from the solvedboard
 def create_puzzle(full_board: List[List[int]], blanks: int) -> List[List[int]]:
     puzzle = [row[:] for row in full_board]
     size = len(puzzle)
@@ -37,20 +41,21 @@ def create_puzzle(full_board: List[List[int]], blanks: int) -> List[List[int]]:
     return puzzle
 
 
-# Builds the complete data model (pure)
+# the full game
 def get_board_with_blanks(size: int) -> SudokuBoard:
-    blanks = 8 if size == 4 else 40
+    blanks = 8 if size == 4 else 40 #easy games = 8 blanks and harder games= 40 blanks
     solution = generate_solved_board(size)
     puzzle = create_puzzle(solution, blanks)
     return SudokuBoard(puzzle=puzzle, solution=solution, size=size, blanks=blanks)
 
 
-# Prints the Sudoku board in a readable format (pure)
+# print the the board
 def print_board(board: List[List[int]]) -> None:
     size = len(board)
     labels = COLUMN_LABELS[size]
 
-    print("\n   " + "  ".join(labels))
+    print("\n   " + "  ".join(labels)) 
+    
     for i in range(size):
         if i % int(size ** 0.5) == 0 and i != 0:
             print("   " + "-" * (size * 2 + (size // int(size ** 0.5)) - 1))
@@ -64,13 +69,16 @@ def print_board(board: List[List[int]]) -> None:
         print(row_str)
 
 
-# Checks if a move is valid (pure)
+#validation
+#check if move is valid
 def is_valid(board: List[List[int]], row: int, col: int, num: int) -> bool:
     size = len(board)
     box = int(size ** 0.5)
     if num in board[row]: return False
     if num in [board[i][col] for i in range(size)]: return False
+    
     start_row, start_col = (row // box) * box, (col // box) * box
+    
     for i in range(box):
         for j in range(box):
             if board[start_row + i][start_col + j] == num:
@@ -78,23 +86,23 @@ def is_valid(board: List[List[int]], row: int, col: int, num: int) -> bool:
     return True
 
 
-# Solves the board using backtracking (impure - mutation required)
+#solve the board using backtracking
 def solve_board(board: List[List[int]]) -> bool:
-    size = len(board)
-    for row in range(size):
-        for col in range(size):
-            if board[row][col] == 0:
-                for num in range(1, size + 1):
-                    if is_valid(board, row, col, num):
-                        board[row][col] = num
-                        if solve_board(board):
-                            return True
-                        board[row][col] = 0
-                return False
-    return True
+    size = len(board) #get the size of the board
+    for row in range(size): #go one by one thry the row
+        for col in range(size):#go one by one thry the col
+            if board[row][col] == 0: #checks if that spot is empty row/col
+                for num in range(1, size + 1): #places numbers from 1> 
+                    if is_valid(board, row, col, num): #>validation checks if thats the right number
+                        board[row][col] = num #>place that number
+                        if solve_board(board): #>tries to solve the board with the placed number
+                            return True #>if it can be solved then send true back up this call stack
+                        board[row][col] = 0 #>if cant solve then return false> backtrack to start set number to 0 and try next number
+                return False #if tried all numbers and no solution then we backtrack returing false
+    return True#this means boards solutions found, completed therefore return true
 
 
-# Game logic for playing Sudoku
+#main logic to play sudoku
 def play_sudoku(name: str, size: int):
     board_model = get_board_with_blanks(size)
     board = [row[:] for row in board_model.puzzle]
@@ -102,23 +110,15 @@ def play_sudoku(name: str, size: int):
 
     print(f"\n{name}, here is your Sudoku puzzle!")
     print_board(board)
-    print("Enter moves like 'A1 2'. Enter 'q' to quit. Enter 's' to solve.")
+    print("Enter moves like 'A1 2'. Enter 'q' to quit.")
 
     wrong_attempts = 0
     while True:
-        move = input("Move (e.g A1 2 / s to solve): ").strip().upper()
+        move = input("Move (e.g A1 2): ").strip().upper()
 
         if move.lower() == 'q':
             print("You have quit the game.")
             return
-
-        if move.lower() == 's':
-            print("\n--- Solving the puzzle... ---")
-            solve_board(board)
-            print_board(board)
-            print("The puzzle is solved. Well done!")
-            return
-
         try:
             parts = move.split()
             if len(parts) != 2: raise ValueError
@@ -151,7 +151,7 @@ def play_sudoku(name: str, size: int):
             print("Invalid format. Please use e.g. A1 2")
 
 
-# Function to solve a Sudoku puzzle by user input (for both easy and hard)
+#function to solve users sudoku
 def solve_sudoku_input():
     try:
         choice = input("Please enter 'e' if you want to solve an easy 4x4 board or enter 'h' for a hard 9x9 board: ").lower()
@@ -166,26 +166,28 @@ def solve_sudoku_input():
 
         print("Perfect! Now enter your Sudoku row by row, and use 0 for the blanks (e.g 1001)")
 
-        board = []
+        board = [] # creates an empty list
         for i in range(size):
             while True:
-                row_input = input(f"Row {i + 1}: ")
-                if len(row_input) != size or not row_input.isdigit():
-                    print(f"Sorry, ensure that it's exactly {size} digits.")
+                row_input = input(f"Row {i + 1}: ") #ask the user row by row>
+                if len(row_input) != size or not row_input.isdigit(): #ensure if number given is within limit
+                    print(f"Sorry, ensure that it's exactly {size} digits.") #message to tell them to correct it
+                
+                # create list caled row>converts  string to interger then inputs it into the list row
                 else:
-                    row = [int(n) for n in row_input]
-                    board.append(row)
-                    break
+                    row = [int(n) for n in row_input] 
+                    board.append(row) #adds to the board list which builds the board 
+                    break #break so move to next row
 
-        print_board(board)
+        print_board(board) 
 
         if solve_board(board):
             print("\nThis is the solved board:")
-            print_board(board)
+            print_board(board) #once complete print the solved board
         else:
-            print("Sorry, can't solve. Please check your input and try again.")
+            print("Sorry, can't solve. Please check your input and try again.") 
     except ValueError:
-        print("Something went wrong. Please check and try again.")
+        print("Something went wrong. Please check and try again.") #incase if user enters letters...
 
 
 # Main menu to control the game
@@ -222,4 +224,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-##### add comments
