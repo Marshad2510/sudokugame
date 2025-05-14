@@ -190,7 +190,7 @@ def solve_sudoku_input():
         print("Something went wrong. Please check and try again.") #incase if user enters letters...
 
 
-# Main menu to control the game
+#main menu
 def main():
     print("Welcome to Sudoku!")
     name = input("Please enter your name: ")
