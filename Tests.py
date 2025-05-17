@@ -67,8 +67,65 @@ class TestSudokuGame(unittest.TestCase):
         #board is solvable
         self.assertFalse(solve_board(board_4x4))
        
+class TestSudokuGameIntegration(unittest.TestCase):
+
+#Integration tests ensure that the Sudoku game's modules(board generation, problem creation, and board solving) perform properly.
+
+    def test_integration_4x4(self):
+        #testing full integration of solve_board, create puzzle, and generated_solved_board for 4x4 board
+
+        #so, to do this generate a 4x4 solve board
+        solved_board = generate_solved_board(4)
+        print("generated 4x4 solved board:")
+        for row in solved_board:
+            print(row) #this shows the fully solved board
+
+        #create a puzzle by removing 4 values that should be blanks 0s
+        puzzle_board = create_puzzle(solved_board, 4)
+        print("\ngenerated puzzle for board 4x4: ")
+        for row in puzzle_board:
+            print(row) # this shows with blanks
+
+        #solve the puzzle
+        is_solved = solve_board(puzzle_board)
+        print("\nsolved puzzle for board 4x4: ")
+        for row in puzzle_board:
+            print(row) # this prints the board after solving the problem
 
 
+        #input assert function to make sure the assert is solved correctly
+        self.assertTrue(is_solved) #check and see if the board is solved succesfully
+        self.assertEqual(puzzle_board, solved_board) #check if it matches the original solved board
+
+
+        def test_integration_9x9(self):
+
+            #now generate 9x9 solved board
+            solved_board = generate_solved_board(9)
+            print("generated 9x9 solved board:")
+            for row in solved_board:
+                print(row) #this shows the fully solved board
+
+        #create a puzzle by removing 30 values that should be blanks 0s
+        puzzle_board = create_puzzle(solved_board, 30)
+        print("\ngenerated puzzle for board 9x9: ")
+        for row in puzzle_board:
+            print(row) # this shows with blanks
+
+            #solve the puzzle
+        is_solved = solve_board(puzzle_board)
+
+        print("\nsolved puzzle for board 4x4: ")
+        for row in puzzle_board:
+            print(row) # this prints the board after solving the problem
+
+
+
+        #input assert function to make sure the assert is solved correctly
+        self.assertTrue(is_solved) #check and see if the board is solved succesfully
+        self.assertEqual(puzzle_board, solved_board) #check if it matches the original solved board
         
+
+
 if __name__ == '__main__':
     unittest.main()  
