@@ -19,7 +19,7 @@ class SudokuBoard:
     size: int # size of the board which is either 4 or 9
     blanks: int # number of blanks filled in the grid
  
-#this code generates a fully solved Sudoku board of the give size
+#this code generates a fully solved Sudoku board of the given size
 def generate_solved_board(size: int) -> List[List[int]]:
     board = [[0] * size for _ in range(size)] # starts the board with 0s
     solve_board(board) #this helps solves the board using backtracking
@@ -118,7 +118,7 @@ def play_sudoku(name: str, size: int):
     #display the start of the sudoku borad
     print(f"\n{name}, here is your Sudoku puzzle!")
     print_board(board)
-    print("Enter moves like 'A1 2'. Enter 'q' to quit.")
+    print("Enter moves like 'A1 2' where A is the colomn, 1 is the row and 2 is the value wish to be entered . Enter 'q' to quit.")
  
     wrong_attempts = 0  #count how many wrong attempts wre attempted
     while True:  #main game loop
@@ -170,7 +170,7 @@ def play_sudoku(name: str, size: int):
                     print("Game over! You've used all attempts.")
                     return
         except (ValueError, IndexError):
-            print("Invalid format. Please use e.g. A1 2")
+            print("Invalid format. Please use e.g. 'A1 2' where A is the colomn, 1 is the row and 2 is the value wish to be entered")
  
  
 #function to solve users sudoku
@@ -214,7 +214,7 @@ def solve_sudoku_input():
         else:
             print("Sorry, can't solve. Please check your input and try again.")
     except ValueError:
-        print("Something went wrong. Please check and try again.") #incase if user enters letters...
+        print("Something went wrong. Please check and try again.") #incase if user enters letters
  
  
 # Main menu to control the game
@@ -276,3 +276,5 @@ def main():
  
 if __name__ == "__main__":
     main()
+
+
